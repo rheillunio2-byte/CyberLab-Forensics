@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- Strict policy: no network access of any kind, no inline scripts. Downloads use blob: URLs created locally. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>CYBERLAB // Forensics Workbench</title><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="noise"></div><div class="grid-bg"></div>
+<header class="top">
+  <a class="identity" href="#analyze"><span class="sigil">C<span>+</span></span><span><b>CYBERLAB</b><small>FORENSICS WORKBENCH <i>v4.0</i></small></span></a>
+  <div class="top-center"><span class="pulse" id="engine-led"></span> <span id="engine-state">ENGINE IDLE</span> <span class="divider"></span> LOCAL ANALYSIS NODE <b>CL-07</b><span class="divider"></span> <span id="clock">--:--:--</span></div>
+  <div class="top-right"><button class="safe" id="safety-btn" data-tip="Open the safety model">● ISOLATED MODE</button><span class="user" title="Operator">RL</span></div>
+</header>
+<main>
+  <section class="hero">
+    <div class="hero-copy"><div class="kicker">MALWARE RESEARCH / STATIC FORENSICS</div><h1>Understand the<br><em>unknown.</em></h1><p>Submit a suspicious file. Inspect its fingerprint, structure, strings, and indicators — without executing it.</p></div>
+    <nav class="orbit-wrap" id="orbit" aria-label="Radial navigation">
+      <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="orbit orbit-c"></div>
+      <div class="orbit-arm" id="orbit-arm"></div>
+      <div class="orbit-core"><span>CL</span><small>LAB NODE</small></div>
+      <button class="orbit-link nav-top active" data-view="analyze" aria-current="page"><span>01</span> ANALYZE</button>
+      <button class="orbit-link nav-right" data-view="specimen"><span>02</span> SPECIMEN</button>
+      <button class="orbit-link nav-bottom" data-view="behavior"><span>03</span> BEHAVIOR</button>
+      <button class="orbit-link nav-left" data-view="reports"><span>04</span> REPORTS</button>
+    </nav>
+  </section>
+
+  <section class="view active" id="analyze">
+    <div class="section-head"><div><div class="kicker">01 / SPECIMEN INTAKE</div><h2>Submit a specimen</h2></div><div class="head-note">STATIC INSPECTION ONLY <span>NO EXECUTION</span></div></div>
+    <div class="stats" id="stats"></div>
+    <div class="intake-grid">
+      <div class="dropzone" id="dropzone" data-state="idle">
+        <label class="drop-idle" for="file-input" id="drop-idle">
+          <div class="drop-icon">⇧</div><div class="drop-title">Drop a sample into the chamber</div><p>or <u>browse your files</u> to select a specimen</p>
+          <div class="file-types">ANY FILE TYPE · MAX 25 MB · PROCESSED LOCALLY IN YOUR BROWSER</div>
+          <div class="drop-bottom"><span class="mini-dot"></span> FILE CONTENTS ARE NEVER UPLOADED TO A SERVER</div>
+        </label>
+        <input id="file-input" type="file">
+        <div class="drop-busy" id="drop-busy" hidden></div>
+        <div class="drop-error" id="drop-error" role="alert" hidden></div>
+      </div>
+      <div class="intake-aside">
+        <div class="aside-card"><div class="aside-icon">⌁</div><div><b>Fingerprinting</b><p>SHA-256 digest, file size, and format hints.</p></div></div>
+        <div class="aside-card"><div class="aside-icon">⌕</div><div><b>Static indicators</b><p>Header checks, readable strings, and entropy estimate.</p></div></div>
+        <div class="aside-card"><div class="aside-icon">◷</div><div><b>Behavioral study</b><p>Clearly labeled illustrative behavior hypotheses.</p></div></div>
+        <div class="warning"><b>Research boundary</b><p>CyberLab does not run samples, emulate instructions, unpack malware, or connect to a network. Never open a suspicious file outside a properly managed lab.</p></div>
+      </div>
+    </div>
+    <div class="sample-row"><span>NO SAMPLE?</span><button id="demo-btn">Load harmless demo specimen ↗</button><button id="demo-btn-2">Load indicator showcase ↗</button><small>Both are built-in plain text, not malware.</small></div>
+    <div id="current-card"></div>
+  </section>
+
+  <section class="view" id="specimen">
+    <div class="section-head"><div><div class="kicker">02 / SPECIMEN DOSSIER</div><h2>File intelligence</h2></div><div class="head-note" id="spec-status">AWAITING SPECIMEN</div></div>
+    <div id="empty-specimen" class="empty-panel"><div class="empty-symbol">◈</div><h3>No specimen loaded</h3><p>Submit a file in the Analyze chamber to generate its static dossier.</p><button class="action" data-jump="analyze">GO TO INTAKE ↗</button></div>
+    <div id="specimen-data" hidden></div>
+  </section>
+
+  <section class="view" id="behavior">
+    <div class="section-head"><div><div class="kicker">03 / BEHAVIORAL STUDY</div><h2>Behavior observatory</h2></div><div class="head-note">HYPOTHESIS VIEW <span>NOT EXECUTION</span></div></div>
+    <div class="behavior-intro"><div class="radar">◎<span></span></div><div><h3>What might this file do?</h3><p>CyberLab does not execute the specimen. This page separates three kinds of information: indicators actually detected in the bytes, behaviors inferred from them, and illustrative scenarios that show how an analyst would reason. Nothing here is observed runtime behavior.</p></div></div>
+    <div id="empty-behavior" class="empty-panel"><div class="empty-symbol">◎</div><h3>No study material yet</h3><p>Load a specimen to build its behavior hypotheses.</p><button class="action" data-jump="analyze">GO TO INTAKE ↗</button></div>
+    <div id="behavior-data" hidden></div>
+  </section>
+
+  <section class="view" id="reports">
+    <div class="section-head"><div><div class="kicker">04 / CASE ARCHIVE</div><h2>Analysis reports</h2></div><div class="btn-row"><button class="action" id="export-report">EXPORT TXT ↓</button><button class="action" id="export-pdf">EXPORT PDF ↓</button></div></div>
+    <div id="empty-report" class="empty-panel"><div class="empty-symbol">▤</div><h3>Case archive is empty</h3><p>Analyze a specimen to populate a local report. Reports are not sent anywhere.</p><button class="action" data-jump="analyze">GO TO INTAKE ↗</button></div>
+    <div id="report-content" class="report-layout" hidden></div>
+  </section>
+</main>
+<footer><span>CYBERLAB FORENSICS WORKBENCH</span><span>CLIENT-SIDE ONLY <i>•</i> NO SAMPLE EXECUTION <i>•</i> NO NETWORK SUBMISSION</span></footer>
+<nav class="dock" id="dock" aria-label="Quick navigation">
+  <button data-view="analyze" data-tip="Analyze"><span>01</span></button><button data-view="specimen" data-tip="Specimen"><span>02</span></button><button data-view="behavior" data-tip="Behavior"><span>03</span></button><button data-view="reports" data-tip="Reports"><span>04</span></button>
+</nav>
+<div id="toasts" class="toasts" aria-live="polite"></div>
+<div id="modal" class="modal" hidden><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title"><h3 id="modal-title"></h3><div id="modal-body"></div><div class="modal-actions" id="modal-actions"></div></div></div>
+<div id="tooltip" class="chart-tip" hidden></div>
+<script src="analysis.js"></script><script src="pdf-export.js"></script><script src="app.js"></script>
+</body></html>
